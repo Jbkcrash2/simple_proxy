@@ -1,0 +1,61 @@
+<drachtio>
+
+    <!-- udp port to listen on for client connections (default 9022), and shared secret used to authenticate clients -->
+	<admin port="9022" secret="cymru">127.0.0.1</admin>
+
+
+    <!-- sip configuration -->
+	<sip>
+		<contacts>
+			<contact>sip:192.168.2.206;transport=udp,tcp</contact>
+		</contacts>
+
+	<!-- if you want to increase the default mtu size for udp packets; stack will force tcp when sending larger packet -->
+        <!--<mtu-size>8192</mtu-size>-->
+        <udp-mtu>8192</udp-mtu>
+
+
+        <!-- optional list of header values which, if encountered in a message will trigger an action
+             [tcp-]action="reject|discard"
+             reject means send a sip non-success response immediately
+             discard means sliently discard the request, generating no response
+        -->
+        <spammers action="reject" tcp-action="discard">
+            <header name="User-Agent">
+                <value>sip-cli</value>
+                <value>sipcli</value>
+                <value>friendly-scanner</value>
+            </header>
+            <header name="To">
+                <value>sipvicious</value>
+            </header>
+        </spammers>
+    </sip>
+
+    <!-- set to true if you want the server to cdr events to a connected client -->
+    <cdrs>false</cdrs>
+
+    <monitoring>
+        <prometheus port="8088">127.0.0.1</prometheus>
+    </monitoring>
+            
+    <!-- logging configuration -->
+    <logging>
+
+        <!-- file-based logging -->
+        <file>
+            <name>/var/log/drachtio/drachtio.log</name>
+            <archive>/var/log/drachtio/archive</archive>
+            <size>100</size>
+            <maxFiles>20</maxFiles>
+            <auto-flush>true</auto-flush>
+        </file>
+
+        <!-- sofia (internal sip library) log level, from 0 (minimal) to 9 (verbose) -->
+        <sofia-loglevel>9</sofia-loglevel>
+        
+        <!-- general process log level: notice, warning, error, info, debug.  Default: info -->
+        <loglevel>info</loglevel>
+    </logging>
+        
+</drachtio>
